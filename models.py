@@ -16,7 +16,7 @@ class adopt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
     species = db.Column(db.Text, nullable=False)
-    photo_url = db.Column(db.Text, default="/static/default_photo.jpg")
+    photo_url = db.Column(db.Text)
     age = db.Column(db.Integer)
     notes = db.Column(db.Text)
     availability = db.Column(db.Boolean, default=True)

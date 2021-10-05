@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import adopt, connect_db, db
 from form import PetForm
@@ -25,6 +25,7 @@ def home():
 
 @app.route("/add", methods=["GET", "POST"])
 def add_pet():
+    """Display & Process New Pet Adoption Form"""
 
     form = PetForm()
 
@@ -38,8 +39,7 @@ def add_pet():
         pet = adopt(
             name=name, species=species, photo_url=photo_url, age=age, notes=notes
         )
-
-        # TODO: Troubleshoot issues where default value is not set for image field.
+        flash(message=f"{name} was added for adoption!")
         db.session.add(pet)
         db.session.commit()
 
@@ -50,11 +50,19 @@ def add_pet():
 
 @app.route("/<int:id>", methods=["GET", "POST"])
 def pet_details(id):
+    """Display Pet Details & Provide/Process Pet Information Updates"""
 
     pet = adopt.query.get_or_404(id)
     form = PetForm(obj=pet)
 
     if form.validate_on_submit():
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data
+        pet.availability = form.availability.data
+
+        db.session.commit()
+
+        flash(message="Changes Successful Saved")
         return redirect(f"/{id}")
     else:
         return render_template("pet_details.html", form=form, pet=pet)

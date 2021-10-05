@@ -1,55 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block title %}{{pet.name}}{% endblock %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
-    crossorigin="anonymous"></script>
-</head>
-
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-4 text-center">
-        <h1>{{pet.name}}</h1>
-        <img src="{{pet.photo_url}}">
-      </div>
-      <div class="col-8">
-        <div class="d-flex justify-content-around mb-5">
-          <div>Age: {{pet.age}}</div>
-          <div>Species: {{pet.species}}</div>
-        </div>
-        <div>
-          <form method="POST">
-            {{ form.hidden_tag() }}
-
-            <div class="mb-3 input-group">
-              {{form.photo_url.label(class_="input-group-text")}}
-              {{form.photo_url(class_="form-control")}}
-            </div>
-            <div class="mb-3 input-group">
-              {{form.notes.label(class_="input-group-text")}}
-              {{form.notes(class_="form-control")}}
-            </div>
-
-            <div class="mb-3 form-check form-switch">
-              {{form.availability.label(class_="form-check-label")}}
-              {{form.availability(class_="form-check-input")}}
-            </div>
-            <button class="btn btn-primary">Save</button>
-          </form>
-        </div>
-      </div>
-
+{% block content %}
+<div class="row row-cols-md-2 gy-4">
+  <div class="col-md-5">
+    <div class="border shadow-sm rounded text-center p-3 h-100">
+      <h1 class="mb-4">{{pet.name}}</h1>
+      {% if pet.photo_url %}
+      <img src="{{pet.photo_url}}" class="img-fluid">
+      {% else %}
+      <img src="static/default_photo.jpg" class="img-fluid">
+      {% endif %}
     </div>
-
   </div>
-</body>
+  <div class="col-md-7">
+    <div class="border shadow-sm rounded p-3 h-100">
+      <div class="d-flex justify-content-around mb-2">
+        <div class="fs-3"><span class="fw-bold">Age:</span> {{pet.age}}</div>
+        <div class="fs-3"><span class="fw-bold">Species:</span> {{pet.species}}</div>
+      </div>
+      <div>
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          <div class="d-none">
+            {{form.age.label}}
+            {{form.age}}
+            {{form.name.label}}
+            {{form.name}}
+            {{form.species.label}}
+            {{form.species}}
+          </div>
+          <div class="mb-3">
+            {{form.photo_url.label(class_="form-label")}}
+            {% if form.photo_url.errors %}
+            {{form.photo_url(class_="form-control is-invalid")}}
+            {% for err in form.photo_url.errors %}
+            <small class="invalid-feedback">{{err}}</small>
+            {% endfor %}
+            {% else %}
+            {{form.photo_url(class_="form-control")}}
+            {% endif%}
+          </div>
+          <div class="mb-3">
+            {{form.notes.label(class_="form-label")}}
+            {% if form.notes.errors %}
+            {{form.notes(class_="form-control is-invalid")}}
+            {% for err in form.notes.errors %}
+            <small class="form-text text-danger">{{err}}</small>
+            {% endfor %}
+            {% else %}
+            {{form.notes(class_="form-control")}}
+            {% endif%}
+          </div>
+          <div class="mb-3 form-check form-switch">
+            {{form.availability.label(class_="form-check-label")}}
+            {{form.availability(class_="form-check-input")}}
+          </div>
+          <button class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
-</html>
+</div>
+{% endblock %}
